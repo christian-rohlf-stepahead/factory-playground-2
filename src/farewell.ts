@@ -7,7 +7,7 @@ export interface FarewellOptions {
 const GREETINGS: Record<FarewellLang, string> = {
   en: 'Goodbye',
   fr: 'Au revoir',
-  pl: '',
+  pl: 'Do widzenia',
 };
 
 /** The farewell for `name`. */
