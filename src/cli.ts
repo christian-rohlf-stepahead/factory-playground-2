@@ -1,9 +1,25 @@
 // The command line: node dist/cli.js <command> [arguments]. Add a command as one more case.
-import { farewell } from './farewell.js';
+import { farewell, type FarewellLang } from './farewell.js';
 
-const USAGE = 'usage: node dist/cli.js farewell <name>';
+const USAGE = 'usage: node dist/cli.js farewell <name> [--lang en|fr]';
 
 const [command, ...args] = process.argv.slice(2);
+
+function parseFarewellArgs(rawArgs: string[]): { name: string; lang: FarewellLang } {
+  const nameParts: string[] = [];
+  let lang: FarewellLang = 'en';
+
+  for (let i = 0; i < rawArgs.length; i += 1) {
+    if (rawArgs[i] === '--lang') {
+      i += 1;
+      lang = rawArgs[i] as FarewellLang;
+    } else {
+      nameParts.push(rawArgs[i]);
+    }
+  }
+
+  return { name: nameParts.join(' '), lang };
+}
 
 switch (command) {
   case 'farewell':
@@ -11,7 +27,8 @@ switch (command) {
       console.error(USAGE);
       process.exitCode = 2;
     } else {
-      console.log(farewell(args.join(' ')));
+      const { name, lang } = parseFarewellArgs(args);
+      console.log(farewell(name, { lang }));
     }
     break;
   default:
