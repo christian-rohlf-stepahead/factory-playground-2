@@ -41,4 +41,36 @@ describe('farewell', () => {
     expect(farewell('Ada')).toBe('Goodbye, Ada!');
     expect(farewell('Ada', { lang: 'en' })).toBe('Goodbye, Ada!');
   });
+
+  it('AC3: returns the Polish farewell when called with { lang: \'pl\' }', () => {
+    expect(farewell('Ada', { lang: 'pl' })).toBe('Do widzenia, Ada!');
+  });
+
+  it('AC4: stays a pure function when called with Polish — no console or process I/O happens inside it', () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const stdoutWrite = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+    const stderrWrite = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
+
+    try {
+      const result = farewell('Ada', { lang: 'pl' });
+      expect(typeof result).toBe('string');
+
+      expect(log).not.toHaveBeenCalled();
+      expect(error).not.toHaveBeenCalled();
+      expect(stdoutWrite).not.toHaveBeenCalled();
+      expect(stderrWrite).not.toHaveBeenCalled();
+    } finally {
+      log.mockRestore();
+      error.mockRestore();
+      stdoutWrite.mockRestore();
+      stderrWrite.mockRestore();
+    }
+  });
+
+  it('AC6: Polish behaviour is covered, and pre-existing English/French behaviour still passes unchanged', () => {
+    expect(farewell('Ada', { lang: 'pl' })).toBe('Do widzenia, Ada!');
+    expect(farewell('Ada')).toBe('Goodbye, Ada!');
+    expect(farewell('Ada', { lang: 'fr' })).toBe('Au revoir, Ada!');
+  });
 });

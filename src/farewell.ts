@@ -1,4 +1,4 @@
-export type FarewellLang = 'en' | 'fr';
+export type FarewellLang = 'en' | 'fr' | 'pl';
 
 export interface FarewellOptions {
   lang?: FarewellLang;
@@ -7,6 +7,7 @@ export interface FarewellOptions {
 const GREETINGS: Record<FarewellLang, string> = {
   en: 'Goodbye',
   fr: 'Au revoir',
+  pl: 'Do widzenia',
 };
 
 /** The farewell for `name`. */
