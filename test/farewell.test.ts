@@ -6,8 +6,12 @@ describe('farewell', () => {
     expect(farewell('Ada')).toBe('Goodbye, Ada!');
   });
 
-  it('AC3 & AC6: returns the French farewell when called with { lang: \'fr\' }', () => {
+  it('AC3: returns the French farewell when called with { lang: \'fr\' }', () => {
     expect(farewell('Ada', { lang: 'fr' })).toBe('Au revoir, Ada!');
+  });
+
+  it('AC6: the French farewell generalises beyond a single pinned name', () => {
+    expect(farewell('Grace', { lang: 'fr' })).toBe('Au revoir, Grace!');
   });
 
   it('AC4: stays a pure function — no console or process I/O happens inside it', () => {
