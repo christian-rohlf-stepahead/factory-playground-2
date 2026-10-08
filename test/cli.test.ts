@@ -1,0 +1,67 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+const originalArgv = process.argv;
+
+interface CliResult {
+  stdout: string;
+  stderr: string;
+  exitCode: number | undefined;
+}
+
+async function runCli(args: string[]): Promise<CliResult> {
+  vi.resetModules();
+  process.argv = ['node', 'cli.js', ...args];
+  process.exitCode = undefined;
+
+  const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+  const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+  try {
+    await import('../src/cli.js');
+  } finally {
+    process.argv = originalArgv;
+  }
+
+  const stdout = log.mock.calls.map((call) => call.join(' ')).join('\n');
+  const stderr = error.mock.calls.map((call) => call.join(' ')).join('\n');
+  const exitCode = process.exitCode;
+  process.exitCode = undefined;
+
+  log.mockRestore();
+  error.mockRestore();
+
+  return { stdout, stderr, exitCode };
+}
+
+describe('farewell CLI', () => {
+  afterEach(() => {
+    process.argv = originalArgv;
+    process.exitCode = undefined;
+  });
+
+  it('AC1: prints the unchanged English farewell when no --lang option is given', async () => {
+    const { stdout, exitCode } = await runCli(['farewell', 'Ada']);
+    expect(stdout).toBe('Goodbye, Ada!');
+    expect(exitCode).toBeUndefined();
+  });
+
+  it('AC2: prints the French farewell when run with --lang fr', async () => {
+    const { stdout, exitCode } = await runCli(['farewell', 'Ada', '--lang', 'fr']);
+    expect(stdout).toBe('Au revoir, Ada!');
+    expect(exitCode).toBeUndefined();
+  });
+
+  it('AC5: the usage/help text mentions the --lang option', async () => {
+    const { stderr } = await runCli(['unknown-command']);
+    expect(stderr).toContain('--lang');
+  });
+
+  it('AC7: pre-existing CLI behaviour (multi-word names, missing-argument usage) still passes unchanged', async () => {
+    const multiWord = await runCli(['farewell', 'Ada', 'Lovelace']);
+    expect(multiWord.stdout).toBe('Goodbye, Ada Lovelace!');
+
+    const missingArg = await runCli(['farewell']);
+    expect(missingArg.stderr).toContain('usage:');
+    expect(missingArg.exitCode).toBe(2);
+  });
+});
