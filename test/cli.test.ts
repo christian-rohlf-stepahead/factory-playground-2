@@ -64,4 +64,32 @@ describe('farewell CLI', () => {
     expect(missingArg.stderr).toContain('usage:');
     expect(missingArg.exitCode).toBe(2);
   });
+
+  it('AC1: still prints the unchanged English farewell once Polish is accepted as a lang value', async () => {
+    const { stdout, exitCode } = await runCli(['farewell', 'Ada']);
+    expect(stdout).toBe('Goodbye, Ada!');
+    expect(exitCode).toBeUndefined();
+  });
+
+  it('AC2: prints the Polish farewell when run with --lang pl', async () => {
+    const { stdout, exitCode } = await runCli(['farewell', 'Ada', '--lang', 'pl']);
+    expect(stdout).toBe('Do widzenia, Ada!');
+    expect(exitCode).toBeUndefined();
+  });
+
+  it('AC5: the usage/help text mentions the pl value for --lang', async () => {
+    const { stderr } = await runCli(['unknown-command']);
+    expect(stderr).toMatch(/\bpl\b/);
+  });
+
+  it('AC6: pre-existing CLI behaviour (English, French) still passes unchanged alongside the new Polish option', async () => {
+    const english = await runCli(['farewell', 'Ada']);
+    expect(english.stdout).toBe('Goodbye, Ada!');
+
+    const french = await runCli(['farewell', 'Ada', '--lang', 'fr']);
+    expect(french.stdout).toBe('Au revoir, Ada!');
+
+    const polish = await runCli(['farewell', 'Ada', '--lang', 'pl']);
+    expect(polish.stdout).toBe('Do widzenia, Ada!');
+  });
 });
