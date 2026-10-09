@@ -4,12 +4,11 @@ export interface FarewellOptions {
   lang?: FarewellLang;
 }
 
-// TODO(I-4/W1): 'es' is a type-only stub for the acceptance tests; the wording is not yet implemented.
 const GREETINGS: Record<FarewellLang, string> = {
   en: 'Goodbye',
   fr: 'Au revoir',
   pl: 'Do widzenia',
-  es: 'TODO-ES-NOT-IMPLEMENTED',
+  es: 'Adiós',
 };
 
 /** The farewell for `name`. */
