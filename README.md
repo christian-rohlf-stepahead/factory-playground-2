@@ -22,7 +22,8 @@ npm test
 ## Run
 
 ```sh
-node dist/cli.js farewell Ada   # Goodbye, Ada!
+node dist/cli.js farewell Ada              # Goodbye, Ada!
+node dist/cli.js farewell Ada --lang es    # Adiós, Ada!
 ```
 
 ## CI

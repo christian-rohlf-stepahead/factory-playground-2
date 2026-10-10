@@ -1,7 +1,7 @@
 // The command line: node dist/cli.js <command> [arguments]. Add a command as one more case.
 import { farewell, type FarewellLang } from './farewell.js';
 
-const USAGE = 'usage: node dist/cli.js farewell <name> [--lang en|fr|pl]';
+const USAGE = 'usage: node dist/cli.js farewell <name> [--lang en|fr|pl|es]';
 
 const [command, ...args] = process.argv.slice(2);
 
